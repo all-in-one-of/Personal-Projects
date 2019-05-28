@@ -146,8 +146,83 @@ static void SuperClassTest(Entity* thirdBorn)
   std::cout << "-------------------------------------------------------------------------------------------------" << std::endl;
 }
 
+
+
+
+
+struct NotInheritComponent
+{
+  Entity* owner;
+
+  void Update() { std::cout << " no super class " << owner->name << std::endl; }
+};
+
+struct history
+{
+  Entity* owner;
+
+  virtual void Update() { std::cout << " I am the history " << owner->name << std::endl; }
+};
+
+struct nickname : public history
+{
+  std::string nick;
+
+  nickname() :nick{ "tommy" } {};
+  void SetNickname(std::string newNic) {
+    nick = newNic;
+  }
+  void Update() { std::cout << " my nickname is " << nick << " " << owner->name << std::endl; }
+};
+
+struct school : public history
+{
+
+  void Update() { std::cout << " school is DigiPen " << owner->name << std::endl; }
+};
+
+void testBasic()
+{
+  Entity* StudentA = BasicEntityList::AddEntity("StudentA");
+  Entity* StudentB = BasicEntityList::AddEntity("StudentB");
+  Entity* StudentC = BasicEntityList::AddEntity("StudentC");
+
+  std::cout << "Start Test - Add " << std::endl;
+  StudentA->AddComponent<NotInheritComponent>();
+  StudentA->AddComponent<nickname>();
+  StudentA->AddComponent<school>();
+
+  std::cout << std::endl;
+  std::cout << "Start Test - Get " << std::endl;
+  StudentA->GetComponent<nickname>()->SetNickname("AAA");
+  StudentA->GetComponent<nickname>()->Update();
+  StudentA->GetComponent<school>()->Update();
+  StudentA->GetComponent<NotInheritComponent>()->Update();
+
+  std::cout << std::endl;
+  std::cout << "Start Test - Remove & Get " << std::endl;
+  StudentA->RemoveComponent<nickname>();
+  if (StudentA->GetComponent<nickname>() == nullptr)
+    std::cout << " nickname have been removed " << std::endl;
+  StudentA->RemoveComponent<school>();
+  StudentA->RemoveComponent<NotInheritComponent>();
+
+  std::cout << std::endl;
+  std::cout << "Basic Functionality Test Succeeded " << std::endl;
+
+}
+
 void Test()
 {
+  /*
+  std::cout << "Start " << std::endl;
+  std::cout << std::endl;
+  testBasic();
+  std::cout << std::endl;
+  std::cout << "End " << std::endl;
+  */
+
+  
   Entity* firstBorn = BasicEntityList::AddEntity("IamNumberOne");
   Entity* secondBorn = BasicEntityList::AddEntity("IamNumberTwo");
   Entity* thirdBorn = BasicEntityList::AddEntity("IamNumberThree");
@@ -159,4 +234,6 @@ void Test()
 
 
   SuperClassTest(thirdBorn);
+  
+
 }
