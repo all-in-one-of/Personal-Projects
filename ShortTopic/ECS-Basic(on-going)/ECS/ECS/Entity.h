@@ -124,7 +124,7 @@ struct BasicEntityList
 
   static Entity* AddEntity(std::string name = "")
   {
-    static BasicEntityList listGet;
+    BasicEntityList& listGet = Instance();
     return listGet.AddEnt(name);
   }
   
